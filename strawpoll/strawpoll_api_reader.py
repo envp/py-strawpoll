@@ -13,101 +13,60 @@ from base.strawpoll_base import StrawpollAPIBase
 
 import requests
 import json
-import re
-import pprint
 
 
 class StrawpollAPIReader(StrawpollAPIBase):
     """
     TODO: Document this class
     """
-    # These are the attributes that strawpoll can return in its response to
-    # an API call See: https://github.com/strawpoll/strawpoll/wiki/API
-    # The strings have been marked utf-8 for compatibility with json.loads()
-    # API_KEYWORDS = frozenset(
-    #     [u'title', u'options', u'votes',
-    #      u'multi', u'permissive', u'id', u'captcha'])
-    # API_ENDPOINT = 'https://strawpoll.me/api/v2/polls/'
-    # URL_PATTERN = re.compile('^https?://strawpoll.me/(?P<id>[1-9][0-9]*)/?r?')
-
-    def __init__(self, data={}):
+    def __init__(self, data=None):
         """ Construct self using a dictionary of data """
-        # self.id = None
-        # self.title = None
-        # self.options = None
-        # self.votes = None
-        # self.multi = False
-        # self.permissive = False
-        # self.captcha = False
         super(StrawpollAPIBase, self).__init__()
-
         for key in data.keys():
-            if hasattr(self, key):
+            # This actually worked.
+            # hasattr -> setattr died with AttributeErrors
+            try:
                 setattr(self, key, data[key])
-
-    @classmethod
-    def from_json(cls, json_string):
-        """
-        Constructs a poll instance from a JSON string
-        returned by strawpoll.me API
-        """
-        api_response = json.loads(json_string)
-        response_keys = set(api_response.keys())
-        if response_keys.issubset(cls.API_KEYWORDS):
-            return cls(api_response)
-
-    @classmethod
-    def from_apiv2(cls, id):
-        """ Constructs a poll instance using a strawpoll id """
-        response = requests.get(cls.API_ENDPOINT + str(id))
-        return cls.from_json(response.text)
-
-    @classmethod
-    def from_url(cls, url):
-        """
-        Constructs a poll instance using a strawpoll url, that matches:
-        ^https?://strawpoll.me/[1-9][0-9]*/?r?
-        Issues: Still matches 'http://strawpoll.me/1r', but ignores the r at
-        the very end
-        """
-        matches = cls.URL_PATTERN.match(url)
-        if matches:
-            # Note: we are actually passing a str and not an int
-            return cls.from_apiv2(matches.group('id'))
-
-    # Begin instance methods
-    def total_votes(self):
-        """ Returns the sum of votes cast for all option in a strawpoll """
-        return sum(self.votes)
-
-    def normalize(self):
-        """ Returns Normalized votes on a 0.0 - 1.0 scale """
-        total = self.total_votes()
-        return [vote / total for vote in self.votes]
-
-    def votes_for(self, option):
-        """
-        Returns the number of votes an option recieved
-        Return None if no such option exists
-        """
-        try:
-            return self.votes[self.options.index(option)]
-        except ValueError:
-            return None
-
-    def normalized_votes_for(self, option):
-        """
-        Returns the fraction of votes an option recieved
-        Return None if no such option exists
-        """
-        return self.normalize()[self.options.index(option)]
-
-    def winner(self):
-        """ Returns the option that got the most votes """
-        most_popular_index = self.votes.index(max(self.votes))
-        return self.options[most_popular_index]
-
-    def loser(self):
-        """ Returns the option that got the least votes """
-        least_popular_index = self.votes.index(min(self.votes))
-        return self.options[least_popular_index]
+            except AttributeError:
+                # Log this?
+                continue
+    #
+    # @classmethod
+    # def from_json(cls, json_string):
+    #     """ See StrawpollAPIBase.from_json(json_string) """
+    #     return super(StrawpollAPIReader, cls).from_json(json_string)
+    #
+    # @classmethod
+    # def from_apiv2(cls, id):
+    #     """ See StrawpollAPIBase.from_apiv2(id) """
+    #     return super(StrawpollAPIReader, cls).from_apiv2(id)
+    #
+    # @classmethod
+    # def from_url(cls, url):
+    #     """ See StrawpollAPIBase.from_url(url) """
+    #     return super(StrawpollAPIReader, cls).from_url(url)
+    #
+    # # Begin instance methods
+    # def total_votes(self):
+    #     """ See StrawpollAPIBase.total_votes() """
+    #     return super(StrawpollAPIReader, self).total_votes()
+    #
+    # def normalize(self):
+    #     """ See StrawpollAPIBase.normalize() """
+    #     return super(StrawpollAPIReader, self).normalize()
+    #
+    # def votes_for(self, option):
+    #     """ See StrawpollAPIBase.votes_for(option) """
+    #     return super(StrawpollAPIReader, self).votes_for(option)
+    #
+    # def normalized_votes_for(self, option):
+    #     """ See StrawpollAPIBase.normalized_votes_for(option) """
+    #     return super(StrawpollAPIReader, self).normalized_votes_for(option)
+    #
+    # def winner(self):
+    #     """ See StrawpollAPIBase.winner() """
+    #     return super(StrawpollAPIReader, self).winner()
+    #
+    # def loser(self):
+    #     """ See StrawpollAPIBase.loser() """
+    #     return super(StrawpollAPIReader, self).loser()
