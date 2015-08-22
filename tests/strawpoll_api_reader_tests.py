@@ -7,7 +7,7 @@ import requests
 id = randrange(1, 1000)
 BASE_URL = 'https://strawpoll.me'
 API_PATH = 'api/v2/polls'
-json = requests.get('https://strawpoll.me/api/v2/polls/%s' % str(id))
+json = requests.get('/'.join([BASE_URL, API_PATH, str(id)]))
 sp = dict(json=json.text, api=StrawpollAPIReader.from_apiv2(id), url=StrawpollAPIReader.from_url('/'.join([BASE_URL, str(id)])))
 
 # I feel these are redundant since we only need to test URL vs JSON

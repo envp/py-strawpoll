@@ -19,7 +19,7 @@ class StrawpollAPIBase(object):
 
     API_POST_HEADERS = {
         'Content-Type': 'application/json',
-        'X-Requested-With': 'StrawpollAPIWriter'
+        'X-Requested-With': 'StrawpollAPIWriter, github=http://git.io/vsV1E'
     }
 
     def __init__(self):
@@ -100,3 +100,13 @@ class StrawpollAPIBase(object):
         """ Returns the option that got the least votes """
         least_popular_index = self.votes.index(min(self.votes))
         return self.options[least_popular_index]
+
+    def to_clean_dict(self):
+        """
+        Cleans up self.__dict__ so that it is accepted as json by strawpoll API
+        """
+        cdict = self.__dict__
+        for key in cdict.keys():
+            if cdict[key] == None:
+                del cdict[key]
+        return cdict
