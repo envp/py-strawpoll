@@ -1,6 +1,12 @@
+"""
+A python module to provide the base class for Strawpoll's JSON API:
+https://strawpoll.me/api/v2/polls
+
+The StrawpollAPIWriter class provides methods for:
+* Calculations on fetched poll data
+* Fetching poll data is left to the reader class to define
+"""
 import re
-import json
-import requests
 
 
 class StrawpollAPIBase(object):
@@ -22,7 +28,7 @@ class StrawpollAPIBase(object):
         'X-Requested-With': 'StrawpollAPIWriter, github=http://git.io/vsV1E'
     }
 
-    def __init__(self):
+    def __init__(self, data={}):
         self.id = None
         self.title = None
         self.options = None
@@ -31,38 +37,14 @@ class StrawpollAPIBase(object):
         self.permissive = False
         self.captcha = False
 
+        for key in data.keys():
+            try:
+                setattr(self, key, data[key])
+            except AttributeError:
+                continue
+
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
-
-    @classmethod
-    def from_json(cls, json_string):
-        """
-        Constructs a poll instance from a JSON string
-        returned by strawpoll.me API
-        """
-        api_response = json.loads(json_string)
-        response_keys = set(api_response.keys())
-        if response_keys.issubset(cls.API_KEYWORDS):
-            return cls(api_response)
-
-    @classmethod
-    def from_apiv2(cls, id):
-        """ Constructs a poll instance using a strawpoll id """
-        response = requests.get(cls.API_ENDPOINT + str(id))
-        return cls.from_json(response.text)
-
-    @classmethod
-    def from_url(cls, url):
-        """
-        Constructs a poll instance using a strawpoll url, that matches:
-        ^https?://strawpoll.me/[1-9][0-9]*/?r?
-        Issues: Still matches 'http://strawpoll.me/1r', but ignores the r at
-        the very end
-        """
-        matches = cls.URL_PATTERN.match(url)
-        if matches is not None:
-            # Note: we are actually passing a str and not an int
-            return cls.from_apiv2(matches.group('id'))
 
     # Begin instance methods
     def total_votes(self):

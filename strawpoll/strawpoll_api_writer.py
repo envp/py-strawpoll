@@ -29,7 +29,7 @@ class StrawpollAPIWriter(StrawpollAPIBase):
     #     'X-Requested-With': 'StrawpollAPIWriter'
     # }
 
-    def __init__(self, data=None):
+    def __init__(self, data={}):
         """ Construct self using a dictionary of data """
         super(StrawpollAPIBase, self).__init__()
         for key in data.keys():
@@ -49,5 +49,7 @@ class StrawpollAPIWriter(StrawpollAPIBase):
         object with overwritten id is returned
         """
         body = json.dumps(self.to_clean_dict())
-        response = requests.post(self.API_ENDPOINT, data=body, headers=self.API_POST_HEADERS)
+        response = requests.post(self.API_ENDPOINT,
+                                 data=body,
+                                 headers=self.API_POST_HEADERS)
         return StrawpollAPIBase.from_json(response.text)
