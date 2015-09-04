@@ -38,7 +38,6 @@ class StrawpollAPIWriter(StrawpollAPIBase):
             try:
                 setattr(self, key, data[key])
             except AttributeError:
-                # Log this?
                 continue
 
     def post(self):
@@ -48,8 +47,16 @@ class StrawpollAPIWriter(StrawpollAPIBase):
         where a valid id already exists. If the post is successful a new
         object with overwritten id is returned
         """
-        body = json.dumps(self.to_clean_dict())
-        response = requests.post(self.API_ENDPOINT,
-                                 data=body,
-                                 headers=self.API_POST_HEADERS)
-        return StrawpollAPIBase.from_json(response.text)
+        try:
+            if len(self.title) == 0 or self.title is None:
+                raise AttributeError("Title cannot be blank")
+            elif not self.options == 0:
+                raise AttributeError("Options cannot be blank")
+            else:
+                body = json.dumps(self.to_clean_dict())
+                response = requests.post(self.API_ENDPOINT,
+                                         data=body,
+                                         headers=self.API_POST_HEADERS)
+                return StrawpollAPIBase.from_json(response.text)
+        except AttributeError:
+            print "Title and options are mandatory fields for creating a poll"
