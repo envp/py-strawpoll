@@ -58,5 +58,5 @@ class StrawpollAPIWriter(StrawpollAPIBase):
                                          data=body,
                                          headers=self.API_POST_HEADERS)
                 return StrawpollAPIBase.from_json(response.text)
-        except AttributeError:
-            print "Title and options are mandatory fields for creating a poll"
+        except StandardError as err:
+            print err
