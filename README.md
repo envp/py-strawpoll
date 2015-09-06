@@ -5,6 +5,7 @@ Python wrapper for [Strawpoll's API](https://github.com/strawpoll/strawpoll/wiki
 py-strawpoll provides the following:
 
 `StrawpollAPIReader` class containing methods:
+
   - `from_json(string)`: Read a strawpoll into memory from its JSON representation
   - `from_url(url)`: Read a strawpoll into memory from it's URL (uses API endpoint to fetch)
   - `from_apiv2(poll_id)`: Read a strawpoll into memory via it's poll id (uses API endpoint to   fetch)
