@@ -4,7 +4,7 @@ Python wrapper for [Strawpoll's API](https://github.com/strawpoll/strawpoll/wiki
 ## About
 py-strawpoll provides the following:
 
-- `StrawpollAPIReader` class containing methods:
+`StrawpollAPIReader` class containing methods:
   - `from_json(string)`: Read a strawpoll into memory from its JSON representation
   - `from_url(url)`: Read a strawpoll into memory from it's URL (uses API endpoint to fetch)
   - `from_apiv2(poll_id)`: Read a strawpoll into memory via it's poll id (uses API endpoint to   fetch)
@@ -12,9 +12,9 @@ py-strawpoll provides the following:
   - `normalize()`: Normalize a poll to the [0, 1] range
   - `votes_for(option_string)`: Get the raw count of votes for a specific option string
   - `normalized_votes_for(option_string)`: Get the normalized votes for a specific option string
-  - `winner`: Who won the poll?
-  - `loser`: Least favoured option
-  - `to_clean_dict`: Returns a python dictionary representation of the poll. Ignores any atributes that are null
+  - `winner()`: Who won the poll?
+  - `loser()`: Least favoured option
+  - `to_clean_dict()`: Returns a python dictionary representation of the poll. Ignores any atributes that are null
 
 
 ## Usage
